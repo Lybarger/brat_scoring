@@ -2,8 +2,8 @@
 import pandas as pd
 import os
 from collections import Counter, OrderedDict
-
-
+import logging
+import re
 
 import brat_scoring.constants as C
 from brat_scoring.corpus_brat import CorpusBrat
@@ -750,7 +750,8 @@ def score_docs(gold_docs, predict_docs, labeled_args, \
                             score_span = SCORE_SPAN,
                             score_labeled = SCORE_LABELED,
                             path = None,
-                            description = None):
+                            description = None,
+                            include_detailed = False):
 
     """
     Score entities
@@ -799,11 +800,14 @@ def score_docs(gold_docs, predict_docs, labeled_args, \
 
     if path is not None:
 
-        f = get_path(path, description=description, ext='.csv', name='scores_summary')
+        f = get_path(path, description=description, ext='.csv', name='scores')
         df_summary.to_csv(f, index=False)
+        logging.info(f'Corpus-level scoring saved to: {f}')
 
-        f = get_path(path, description=description, ext='.csv', name='scores_detailed')
-        df_detailed.to_csv(f, index=False)
+        if include_detailed:
+            f = re.sub('\.csv', '_detailed.csv', f)
+            df_detailed.to_csv(f, index=False)
+            logging.info(f'Document-level scoring saved to: {f}')
 
 
 
@@ -818,15 +822,20 @@ def score_brat(gold_dir, predict_dir, labeled_args, \
                             score_span = SCORE_SPAN,
                             score_labeled = SCORE_LABELED,
                             path = None,
-                            description = None):
+                            description = None,
+                            include_detailed = False):
 
-
+    logging.info("")
+    logging.info(f"Gold importing")
     gold_corpus = corpus_class()
     gold_corpus.import_dir(gold_dir, n=sample_count)
+    logging.info(f"Gold imported")
 
+    logging.info("")
+    logging.info(f"Predict importing...")
     predict_corpus = corpus_class()
     predict_corpus.import_dir(predict_dir, n=sample_count)
-
+    logging.info(f"Predict imported")
 
     assert gold_corpus.doc_count()    > 0, f"Could not find any BRAT files at: {gold_dir}"
     assert predict_corpus.doc_count() > 0, f"Could not find any BRAT files at: {predict_dir}"
@@ -834,12 +843,16 @@ def score_brat(gold_dir, predict_dir, labeled_args, \
     gold_docs =    gold_corpus.docs(as_dict=True)
     predict_docs = predict_corpus.docs(as_dict=True)
 
+    logging.info("")
+    logging.info(f"Scoring underway...")
     df_dict = score_docs(gold_docs, predict_docs, \
                             labeled_args = labeled_args,
                             score_trig = score_trig,
                             score_span = score_span,
                             score_labeled = score_labeled,
                             path = path,
-                            description = description)
+                            description = description,
+                            include_detailed = include_detailed)
+    logging.info(f"Scoring complete")
 
     return df_dict

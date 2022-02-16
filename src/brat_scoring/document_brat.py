@@ -191,8 +191,6 @@ class DocumentBrat(Document):
                                 tb_dict = self.tb_dict,
                                 event_types = event_types,
                                 argument_types = argument_types)
-
-
         ann = []
 
         for tb_id, tb in self.tb_dict.items():

@@ -17,36 +17,6 @@ from brat_scoring.document import Document
 from brat_scoring.brat import write_txt, write_ann
 
 
-def include_keep(tags, include):
-
-    # assume keep is true by default
-    keep = True
-
-    # exclude labels provided
-    if (include is not None):
-
-        # require all include tags to be present
-        if not include.issubset(tags):
-            keep = False
-
-    return keep
-
-
-def exclude_keep(tags, exclude):
-
-    # assume keep is true by default
-    keep = True
-
-    # exclude labels provided
-    if (exclude is not None):
-
-        # at least some overlap between exclude and tags
-        if len(exclude.intersection(tags)) > 0:
-            keep = False
-
-    return keep
-
-
 class Corpus:
     '''
     Corpus container (collection of documents)
@@ -81,103 +51,33 @@ class Corpus:
 
         return True
 
-    def doc_filter(self, include=None, exclude=None):
-        '''
-        Get filtered set of documents
-        '''
-
-        if isinstance(include, str):
-            include = [include]
-
-        if isinstance(exclude, str):
-            exclude = [exclude]
-
-        if (include is not None):
-            include = set(include)
-
-        if (exclude is not None):
-            exclude = set(exclude)
-
-        docs_out = OrderedDict()
-        for id, doc in self.docs_.items():
-
-            # go to document tags
-            tags = doc.tags
-            if tags is None:
-                tags = set([])
-            if not isinstance(tags, set):
-                tags = set(tags)
-
-            keep = True
-            keep = keep and include_keep(tags, include)
-            keep = keep and exclude_keep(tags, exclude)
-
-            if keep:
-                docs_out[id] = doc
-
-        if (include is not None) or (exclude is not None):
-            logging.info('Document filter')
-            logging.info('\tinclude:         {}'.format(include))
-            logging.info('\texclude:         {}'.format(exclude))
-            logging.info('\tcount, all:      {}'.format(len(self)))
-            logging.info('\tcount, filtered: {}'.format(len(docs_out)))
-
-        return docs_out
-
-
-    def id2stem(self, id):
-        '''
-        Convert document ID to filename stem
-        '''
-        return id
-
-    def docs(self, as_dict=False, include=None, exclude=None):
+    def docs(self, as_dict=False):
         '''
         Get documents
         '''
 
-        # Get filtered documents
-        docs = self.doc_filter(include=include, exclude=exclude)
-
         # Output documents as dict (no change to output needed)
         if as_dict:
-            pass
+            return self.docs_
         else:
-            docs = list(docs.values())
+            return list(self.docs_.values())
 
-        return docs
-
-    def ids(self, as_stem=False, include=None, exclude=None):
-        '''
-        Get tokenized documents
-        '''
-        ids = []
-        for doc in self.docs(as_dict=False, include=include, exclude=exclude):
-
-            id = doc.id
-            if as_stem:
-                id = self.id2stem(id)
-            ids.append(id)
-
-        return ids
-
-    def doc_count(self, include=None, exclude=None):
+    def doc_count(self):
         '''
         Get document count
         '''
-        return len(self.docs(include=include, exclude=exclude))
+        return len(self.docs())
 
-
-    def sentence_count(self, include=None, exclude=None):
+    def sentence_count(self):
 
         count = 0
-        for doc in self.docs(include=include, exclude=exclude):
+        for doc in self.docs():
             count += doc.sentence_count()
         return count
 
-    def word_count(self, include=None, exclude=None):
+    def word_count(self):
 
         count = 0
-        for doc in self.docs(include=include, exclude=exclude):
+        for doc in self.docs():
             count += doc.word_count()
         return count

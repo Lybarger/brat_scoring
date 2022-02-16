@@ -461,16 +461,6 @@ def get_brat_files(path):
     return (text_files, ann_files)
 
 
-
-# def mapper(event_type, span_type, export_map):
-#
-#     if (export_map is not None) and \
-#        (event_type in export_map) and \
-#        (span_type in export_map[event_type]):
-#         span_type = export_map[event_type][span_type]
-#
-#     return span_type
-
 def textbound_str(id, type_, start, end, text):
     '''
     Create textbounds during from span
@@ -511,14 +501,6 @@ def textbound_str(id, type_, start, end, text):
         type_ = type_,
         indices = indices,
         text = text)
-
-    #return 'T{id}\t{type_} {start} {end}\t{text}'.format( \
-    #    id = id,
-    #    type_ = type_,
-    #    start = start,
-    #    end = end,
-    #    text = text)
-
 
 def attr_str(attr_id, arg_type, tb_id, value):
     '''
@@ -585,11 +567,8 @@ def relation_str(id, role, arg1, arg2):
 
     Parameters:
     -----------
-
     R1	attr Arg1:T2 Arg2:T1
-
     '''
-
 
     if isinstance(id, str) and (id[0] == "R"):
         id = id[1:]
@@ -598,9 +577,6 @@ def relation_str(id, role, arg1, arg2):
     out = f'R{id}\t{role} Arg1:{arg1} Arg2:{arg2}'
 
     return out
-
-
-
 
 def write_file(path, id, content, ext):
 
@@ -617,8 +593,6 @@ def write_file(path, id, content, ext):
         f.write(content)
 
     return fn
-
-
 
 def write_txt(path, id, text, fix_linebreak=False, strip_ws=False):
     '''
@@ -687,7 +661,6 @@ def get_max_id(object_dict):
     else:
         i = max(x)
     return i
-
 
 def get_next_index(d):
     ids = [x.id for x in d.values()]

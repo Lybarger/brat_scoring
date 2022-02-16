@@ -33,9 +33,7 @@ class CorpusBrat(Corpus):
 
     def import_dir(self, path, \
                         n = None,
-                        skip = None,
-                        ann_map = None,
-                        tag_function = None):
+                        ann_map = None):
 
         tokenizer = spacy.load(self.spacy_model)
 
@@ -55,11 +53,6 @@ class CorpusBrat(Corpus):
             logging.warn("Only process processing first {} files".format(n))
             logging.warn("="*72)
             file_list = file_list[:n]
-
-        if skip is not None:
-            logging.warn("="*72)
-            logging.warn(f"Skipping ids: {skip}")
-            logging.warn("="*72)
 
         logging.info(f"BRAT file count: {len(file_list)}")
 
@@ -83,25 +76,17 @@ class CorpusBrat(Corpus):
             # Use filename as ID
             id = os.path.splitext(os.path.relpath(fn_txt, path))[0]
 
-            if (skip is None) or (id not in skip):
+            doc = self.document_class( \
+                id = id,
+                text = text,
+                ann = ann,
+                tags = None,
+                tokenizer = tokenizer
+                )
 
-                if tag_function is None:
-                    tags = None
-                else:
-                    tags = tag_function(id)
-
-
-                doc = self.document_class( \
-                    id = id,
-                    text = text,
-                    ann = ann,
-                    tags = tags,
-                    tokenizer = tokenizer
-                    )
-
-                # Build corpus
-                assert doc.id not in self.docs_
-                self.docs_[doc.id] = doc
+            # Build corpus
+            assert doc.id not in self.docs_
+            self.docs_[doc.id] = doc
 
             pbar.update(1)
 

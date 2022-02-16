@@ -30,9 +30,5 @@ class Document:
         else:
             self.tags = tags
 
-
     def __str__(self):
-        return self.text
-
-    def X(self):
         return self.text

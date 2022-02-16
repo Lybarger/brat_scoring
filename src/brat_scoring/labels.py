@@ -69,8 +69,6 @@ class Relation(object):
         x = 'Relation({})'.format(x)
         return x
 
-
-
 class Event(object):
     '''
     '''
@@ -86,8 +84,6 @@ class Event(object):
             x += '\n\t' + str(arg)
         x += '])'
         return x
-
-
 
 
 def get_indices_by_sent(start, end, offsets, tokens):
