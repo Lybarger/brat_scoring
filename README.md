@@ -48,7 +48,7 @@ The command line script, `score_sdoh.py`, is a simple wrapper for the function, 
 
 ```python
 import sys
-sys.path.insert(1, package_path
+sys.path.insert(1, package_path)
 
 from brat_scoring.scoring import score_brat
 from brat_scoring.constants import EXACT, LABEL, OVERLAP, PARTIAL, MIN_DIST
