@@ -9,14 +9,16 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')
 
 from brat_scoring.constants import EXACT, LABEL, OVERLAP, PARTIAL, MIN_DIST
 from brat_scoring.constants_sdoh import STATUS_TIME, TYPE_LIVING, STATUS_EMPLOY
-from brat_scoring.scoring import score_brat
+from brat_scoring.scoring import score_brat_sdoh
+from brat_scoring.constants_sdoh import LABELED_ARGUMENTS as SDOH_LABELED_ARGUMENTS
+
 
 def get_argparser():
     parser = argparse.ArgumentParser(description = 'compares and scores two directories of brat files and summaries the performance in a csv file')
     parser.add_argument('gold_dir',        type=str, help="path to input directory with gold labels in BRAT format")
     parser.add_argument('predict_dir',     type=str, help="path to input directory with predicted labels in BRAT format")
     parser.add_argument('output',          type=str, help="path to output csv with scores")
-    parser.add_argument('--labeled_args',  type=str, default=[STATUS_TIME, TYPE_LIVING, STATUS_EMPLOY], nargs='+', help=f'span only arguments')
+    parser.add_argument('--labeled_args',  type=str, default=SDOH_LABELED_ARGUMENTS, nargs='+', help=f'span only arguments')
     parser.add_argument('--score_trig',    type=str, default=OVERLAP, help=f'equivalence criteria for triggers, {{{EXACT}, {OVERLAP}, {MIN_DIST}}}')
     parser.add_argument('--score_span',    type=str, default=EXACT,   help=f'equivalence criteria for span only arguments, {{{EXACT}, {OVERLAP}, {PARTIAL}}}')
     parser.add_argument('--score_labeled', type=str, default=LABEL,   help=f'equivalence criteria for labeled arguments, {{{EXACT}, {OVERLAP}, {LABEL}}}')
@@ -64,17 +66,18 @@ def main(args):
 
     arg_dict = vars(args)
 
-    logging.basicConfig(level=args.loglevel.upper())
 
-    score_brat( \
+
+    score_brat_sdoh( \
         gold_dir = arg_dict['gold_dir'],
         predict_dir = arg_dict["predict_dir"],
         labeled_args = arg_dict["labeled_args"],
         score_trig = arg_dict["score_trig"],
         score_span = arg_dict["score_span"],
         score_labeled = arg_dict["score_labeled"],
-        path = arg_dict["output"],
-        include_detailed = arg_dict["include_detailed"])
+        output = arg_dict["output"],
+        include_detailed = arg_dict["include_detailed"],
+        loglevel = arg_dict["loglevel"])
 
 
 

@@ -50,7 +50,7 @@ TYPE_LIVING_VAL         = 'TypeLivingVal'
 TYPE_SEXUAL_ORIENT      = 'TypeSexualOrient'
 TYPE_SEXUAL_ORIENT_VAL  = 'TypeSexualOrientVal'
 
-
+LABELED_ARGUMENTS = [STATUS_TIME, STATUS_EMPLOY, TYPE_LIVING]
 
 # Span only - new
 AMOUNT      = 'Amount'

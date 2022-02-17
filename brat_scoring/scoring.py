@@ -6,8 +6,15 @@ import logging
 import re
 
 import brat_scoring.constants as C
+
 from brat_scoring.corpus_brat import CorpusBrat
 from brat_scoring.labels import Entity
+
+
+from brat_scoring.constants_sdoh import LABELED_ARGUMENTS as SDOH_LABELED_ARGUMENTS
+SDOH_TRIG = C.OVERLAP
+SDOH_SPAN = C.EXACT
+SDOH_LABELED = C.LABEL
 
 SCORE_TRIG = C.EXACT
 SCORE_SPAN = C.EXACT
@@ -821,7 +828,7 @@ def score_brat(gold_dir, predict_dir, labeled_args, \
                             score_trig = SCORE_TRIG,
                             score_span = SCORE_SPAN,
                             score_labeled = SCORE_LABELED,
-                            path = None,
+                            output = None,
                             description = None,
                             include_detailed = False):
 
@@ -845,14 +852,44 @@ def score_brat(gold_dir, predict_dir, labeled_args, \
 
     logging.info("")
     logging.info(f"Scoring underway...")
-    df_dict = score_docs(gold_docs, predict_docs, \
+    df = score_docs(gold_docs, predict_docs, \
                             labeled_args = labeled_args,
                             score_trig = score_trig,
                             score_span = score_span,
                             score_labeled = score_labeled,
-                            path = path,
+                            path = output,
                             description = description,
                             include_detailed = include_detailed)
     logging.info(f"Scoring complete")
 
-    return df_dict
+    return df
+
+
+def score_brat_sdoh(gold_dir, predict_dir, output, \
+                            labeled_args = SDOH_LABELED_ARGUMENTS,
+                            corpus_class = CorpusBrat,
+                            sample_count = None,
+                            score_trig = SDOH_TRIG,
+                            score_span = SDOH_SPAN,
+                            score_labeled = SDOH_LABELED,
+                            description = None,
+                            include_detailed = False,
+                            loglevel = None):
+
+    if log_level is not None:
+        logging.basicConfig(level=args.loglevel.upper())
+
+    df = score_brat( \
+                        gold_dir = gold_dir,
+                        predict_dir = predict_dir,
+                        labeled_args = labeled_args, \
+                        corpus_class = corpus_class,
+                        sample_count = sample_count,
+                        score_trig = score_trig,
+                        score_span = score_span,
+                        score_labeled = score_labeled,
+                        output = output,
+                        description = description,
+                        include_detailed = include_detailed):
+
+    return df
