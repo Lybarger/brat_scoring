@@ -27,7 +27,7 @@ python3 score_brat.py /home/gold/ /home/predict/ /home/scoring.csv
 --score_trig min_dist --score_span exact --score_labeled label
 ```
 
-### Package import
+### Pythnon function import
 The command line script, `score_sdoh.py`, is a simple wrapper for the function, `score_brat`. Below is an example.
 
 ```python
