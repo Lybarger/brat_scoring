@@ -1,5 +1,6 @@
 # BRAT Scoring
 
+## Evaluation criteria
 
 
 ## Evaluation script
@@ -25,5 +26,25 @@ Below is an example usage:
 python3 score_brat.py /home/gold/ /home/predict/ /home/scoring.csv
 --score_trig min_dist --score_span exact --score_labeled label
 ```
+
+### Package import
+The command line script, `score_sdoh.py`, is a simple wrapper for the function, `score_brat`. Below is an example.
+
+```python
+import sys
+sys.path.insert(1, package_path
+
+from brat_scoring.scoring import score_brat
+from brat_scoring.constants import EXACT, LABEL, OVERLAP, PARTIAL, MIN_DIST
+
+df = score_brat( \
+                gold_dir = "/home/gold/", 
+                predict_dir = "/home/predict/", \
+                score_trig = OVERLAP,
+                score_span = EXACT,
+                score_labeled = LABEL,
+                path = "/home/scoring.csv")
+```
+
 
 
