@@ -1,7 +1,7 @@
 # BRAT Scoring
 
 ## Evaluation criteria
-
+The evaluation criteria are defined in [sdoh_scoring.pdf](docs/sdoh_scoring.pdf).
 
 ## Evaluation script
 The scoring routine can be called from command line or imported as a Python package. The scoring routine implements the aforementioned evaluation by comparing two directories with BRAT-style annotations (*.txt and *.ann files). The scoring routine identifies all the *.ann files in both directories, finds matching filenames in the directories, and then compares the annotations defined in the *.ann files.
