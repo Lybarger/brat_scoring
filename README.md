@@ -9,7 +9,15 @@ The evaluation criteria are defined in [sdoh_scoring.pdf](docs/sdoh_scoring.pdf)
 The other criteria are included in the scoring routine to assist with troubleshooting.
 
 ## BRAT setup
-The BRAT configuration files are available at [annotation.conf](docs/annotation.conf) and [visual.conf](docs/visual.conf).
+The BRAT configuration files for the SDOH data are available at [annotation.conf](docs/annotation.conf) and [visual.conf](docs/visual.conf).
+
+## Requirements
+The scoring routine is implemented in Python 3. NO testing was performed using Python 2. 
+
+The following packages are needed:
+- spacy with languange model "en_core_web_sm"
+- tqdm
+- pandas
 
 ## Evaluation script
 The scoring routine can be called from command line or imported as a Python package. The scoring routine implements the aforementioned evaluation by comparing two directories with BRAT-style annotations (*.txt and *.ann files). The scoring routine identifies all the *.ann files in both directories, finds matching filenames in the directories, and then compares the annotations defined in the *.ann files.
