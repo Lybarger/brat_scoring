@@ -53,3 +53,5 @@ R = 'R'
 F1 = 'F1'
 MICRO = 'micro'
 METRIC = 'metric'
+
+OVERALL = 'OVERALL'

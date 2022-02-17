@@ -17,7 +17,7 @@ def get_argparser():
     parser = argparse.ArgumentParser(description = 'compares and scores two directories of brat files and summaries the performance in a csv file')
     parser.add_argument('gold_dir',        type=str, help="path to input directory with gold labels in BRAT format")
     parser.add_argument('predict_dir',     type=str, help="path to input directory with predicted labels in BRAT format")
-    parser.add_argument('output',          type=str, help="path to output csv with scores")
+    parser.add_argument('output_path',      type=str, help="path to output csv with scores")
     parser.add_argument('--labeled_args',  type=str, default=SDOH_LABELED_ARGUMENTS, nargs='+', help=f'span only arguments')
     parser.add_argument('--score_trig',    type=str, default=OVERLAP, help=f'equivalence criteria for triggers, {{{EXACT}, {OVERLAP}, {MIN_DIST}}}')
     parser.add_argument('--score_span',    type=str, default=EXACT,   help=f'equivalence criteria for span only arguments, {{{EXACT}, {OVERLAP}, {PARTIAL}}}')
@@ -75,7 +75,7 @@ def main(args):
         score_trig = arg_dict["score_trig"],
         score_span = arg_dict["score_span"],
         score_labeled = arg_dict["score_labeled"],
-        output = arg_dict["output"],
+        output_path = arg_dict["output_path"],
         include_detailed = arg_dict["include_detailed"],
         loglevel = arg_dict["loglevel"])
 

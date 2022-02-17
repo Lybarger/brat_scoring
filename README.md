@@ -55,7 +55,7 @@ from brat_scoring.constants import EXACT, LABEL, OVERLAP, PARTIAL, MIN_DIST
 df = score_brat_sdoh( \
                 gold_dir = "/home/gold/",
                 predict_dir = "/home/predict/", \
-                output = "/home/scoring.csv"
+                output_path = "/home/scoring.csv"
                 score_trig = OVERLAP,
                 score_span = EXACT,
                 score_labeled = LABEL,
@@ -64,10 +64,15 @@ df = score_brat_sdoh( \
 
 
 ### Command line
-The command line script, `score_sdoh.py`, is a simple wrapper for the function, `score_brat_sdoh`.
+The command line script, `run_sdoh_scoring.py`, is a simple wrapper for the function, `score_brat_sdoh`.
+
+The arguments for the command line script,`run_sdoh_scoring.py`, are similar to that of the function `score_brat_sdoh` above. The arguments can be view using:
+```
+python3 run_sdoh_scoring.py -h
+```
 
 Below is an example usage:
 ```
-python3 score_sdoh.py /home/gold/ /home/predict/ /home/scoring.csv
+python3 run_sdoh_scoring.py /home/gold/ /home/predict/ /home/scoring.csv
 --score_trig min_dist --score_span exact --score_labeled label
 ```
