@@ -683,7 +683,7 @@ def score_docs(gold_docs, predict_docs, labeled_args, \
                             output_path = None,
                             description = None,
                             include_detailed = False,
-                            spacy_model = SPACY_MODEL
+                            spacy_model = SPACY_MODEL,
                             event_types = None,
                             argument_types = None):
 
