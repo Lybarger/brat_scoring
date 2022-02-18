@@ -25,6 +25,16 @@ SCORE_LABELED = C.LABEL
 SPACY_MODEL = C.SPACY_MODEL
 
 
+def filter_df(df, event_types=None, argument_types=None):
+
+    if event_types is not None:
+        df = df[df[C.EVENT].isin(event_types)]
+
+    if argument_types is not None:
+        df = df[df[C.ARGUMENT].isin(argument_types)]
+
+    return df
+
 def check_entity_attributes(entity, \
     required_attributes=["type_", "subtype", "char_start", "char_end", "text"]):
 
@@ -674,7 +684,8 @@ def score_docs(gold_docs, predict_docs, labeled_args, \
                             description = None,
                             include_detailed = False,
                             spacy_model = SPACY_MODEL
-                            ):
+                            event_types = None,
+                            argument_types = None):
 
     """
     Score entities
@@ -724,6 +735,17 @@ def score_docs(gold_docs, predict_docs, labeled_args, \
                             score_labeled = score_labeled,
                             tokenizer = tokenizer)
 
+
+    if (event_types is not None) or (argument_types is not None):
+        df_summary = filter_df(df_summary, \
+                                event_types = event_types,
+                                argument_types = argument_types)
+
+        df_detailed = filter_df(df_detailed, \
+                                event_types = event_types,
+                                argument_types = argument_types)
+
+
     if score_span != C.PARTIAL:
         df_summary = insert_total_row(df_summary)
 
@@ -751,7 +773,9 @@ def score_brat(gold_dir, predict_dir, labeled_args, \
                             output_path = None,
                             description = None,
                             include_detailed = False,
-                            spacy_model = SPACY_MODEL):
+                            spacy_model = SPACY_MODEL,
+                            event_types = None,
+                            argument_types = None):
 
     logging.info("")
     logging.info(f"Gold importing...")
@@ -781,7 +805,10 @@ def score_brat(gold_dir, predict_dir, labeled_args, \
                             output_path = output_path,
                             description = description,
                             include_detailed = include_detailed,
-                            spacy_model = spacy_model)
+                            spacy_model = spacy_model,
+                            event_types = event_types,
+                            argument_types = argument_types)
+
     logging.info(f"Scoring complete")
 
     return df
