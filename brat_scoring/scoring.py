@@ -25,6 +25,14 @@ SCORE_LABELED = C.LABEL
 SPACY_MODEL = C.SPACY_MODEL
 
 
+def check_entity_attributes(entity, \
+    required_attributes=["type_", "subtype", "char_start", "char_end", "text"]):
+
+    attributes = entity.__dict__.keys()
+
+    for attribute in required_attributes:
+        assert attribute in attributes, f'''attribute "{attribute}" is not an attributes {attributes}'''
+
 def insert_total_row(df):
 
     df_total = df.sum()
@@ -201,8 +209,8 @@ def compare_entities(gold, predict, entity_scoring=C.EXACT, include_subtype=Fals
 
     assert entity_scoring in [C.EXACT, C.PARTIAL, C.OVERLAP, C.LABEL]
 
-    assert isinstance(gold, Entity)
-    assert isinstance(predict, Entity)
+    check_entity_attributes(gold)
+    check_entity_attributes(predict)
 
     # assess label match
     type_match = gold.type_ == predict.type_
@@ -278,7 +286,7 @@ def get_entity_matches(gold, predict, labeled_args, \
 
     for i, g in enumerate(gold):
 
-        assert isinstance(g, Entity)
+        check_entity_attributes(g)
 
         matching_j = []
         total_v = 0
@@ -286,7 +294,7 @@ def get_entity_matches(gold, predict, labeled_args, \
         # iterate over predicted entities
         for j, p in enumerate(predict):
 
-            assert isinstance(p, Entity)
+            check_entity_attributes(p)
 
             # key for counter
             if event_type is None:
@@ -357,12 +365,12 @@ def get_equivalent_triggers_spans(gold, predict, score_trig=SCORE_TRIG):
     equivalent = []
     for i, g in enumerate(gold):
 
-        assert isinstance(g, Entity)
+        check_entity_attributes(g)
 
         # iterate over predicted triggers
         for j, p in enumerate(predict):
 
-            assert isinstance(p, Entity)
+            check_entity_attributes(p)
 
             # compare triggers
             match = compare_entities(g, p, \
@@ -386,7 +394,7 @@ def get_equivalent_triggers_dist(gold, predict, score_trig=SCORE_TRIG):
     # iterate over gold triggers
     for i, g in enumerate(gold):
 
-        assert isinstance(g, Entity)
+        check_entity_attributes(g)
 
         # get gold midpoint
         g_midpoint = span_midpoint(g.char_start, g.char_end)
@@ -394,7 +402,7 @@ def get_equivalent_triggers_dist(gold, predict, score_trig=SCORE_TRIG):
         # iterate over predicted triggers
         for j, p in enumerate(predict):
 
-            assert isinstance(p, Entity)
+            check_entity_attributes(p)
 
             # get predicted midpoint
             p_midpoint = span_midpoint(p.char_start, p.char_end)
@@ -897,7 +905,7 @@ def score_brat_sdoh(gold_dir, predict_dir, output_path, \
 #
 #     # iterate over gold entities
 #     for i, g in enumerate(gold):
-#         assert isinstance(g, Entity)
+#         assert isinstance(g, Entity) in "text"]
 #
 #         # iterate over predicted entities
 #         for j, p in enumerate(predict):
