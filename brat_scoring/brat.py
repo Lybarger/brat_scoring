@@ -167,7 +167,7 @@ def get_annotations(ann):
                 ATTRIBUTE_RE.search(l)
             )
         ]
-    msg = 'Could not match all annotation lines: {}'.format(remaining)
+    msg = f'''Could not match all annotation lines: {remaining}. This maybe due to a textbound with line break character in the text span.'''
     assert len(remaining)==0, msg
 
     # Get events

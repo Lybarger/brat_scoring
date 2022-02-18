@@ -22,6 +22,8 @@ SCORE_TRIG = C.EXACT
 SCORE_SPAN = C.EXACT
 SCORE_LABELED = C.LABEL
 
+SPACY_MODEL = C.SPACY_MODEL
+
 
 def insert_total_row(df):
 
@@ -663,7 +665,7 @@ def score_docs(gold_docs, predict_docs, labeled_args, \
                             output_path = None,
                             description = None,
                             include_detailed = False,
-                            spacy_model = C.SPACY_MODEL
+                            spacy_model = SPACY_MODEL
                             ):
 
     """
@@ -704,12 +706,9 @@ def score_docs(gold_docs, predict_docs, labeled_args, \
         ids.append(id)
 
 
-
     """
     Score events
     """
-
-
     df_summary, df_detailed = score_events(ids, gold_events, predict_events, \
                             labeled_args = labeled_args,
                             score_trig = score_trig,
@@ -744,7 +743,7 @@ def score_brat(gold_dir, predict_dir, labeled_args, \
                             output_path = None,
                             description = None,
                             include_detailed = False,
-                            spacy_model = C.SPACY_MODEL):
+                            spacy_model = SPACY_MODEL):
 
     logging.info("")
     logging.info(f"Gold importing...")
