@@ -21,6 +21,8 @@ The following packages are needed:
 - tqdm
 - pandas
 - wheel
+ 
+ The package install will fail, if `wheel` is not already installed. 
 
 ## Evaluation script
 The scoring routine can be pip installed or called from command line. The scoring routine implements the aforementioned evaluation by comparing two directories with BRAT-style annotations (*.txt and *.ann files). The scoring routine identifies all the *.ann files in both directories, finds matching filenames in the directories, and then compares the annotations defined in the *.ann files.
