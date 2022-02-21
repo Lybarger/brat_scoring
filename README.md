@@ -54,8 +54,8 @@ from brat_scoring.constants import EXACT, LABEL, OVERLAP, PARTIAL, MIN_DIST
 
 df = score_brat_sdoh( \
                 gold_dir = "/home/gold/",
-                predict_dir = "/home/predict/", \
-                output_path = "/home/scoring.csv"
+                predict_dir = "/home/predict/", 
+                output_path = "/home/scoring.csv",
                 score_trig = OVERLAP,
                 score_span = EXACT,
                 score_labeled = LABEL,
