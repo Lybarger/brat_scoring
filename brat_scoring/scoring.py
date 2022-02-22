@@ -545,24 +545,28 @@ def get_event_df(nt, np, tp):
     print(nt, np, tp)
     print('orig', df)
 
+    if len(df) == 0:
+        columns = [C.EVENT, C.ARGUMENT, C.SUBTYPE, C.NT, C.NP, C.TP, C.P, C.R, C.F1]
+        df = pd.DataFrame(columns=columns)
+        df.index.name = C.METRIC
+    else:
+        df = pd.pivot_table(df, values=C.COUNT, index=cols, columns=C.METRIC)
 
-    df = pd.pivot_table(df, values=C.COUNT, index=cols, columns=C.METRIC)
-    print('pt', df)
 
-    df = df.fillna(0).astype(int)
-    df = df.reset_index()
+        df = df.fillna(0).astype(int)
+        df = df.reset_index()
 
-    for c in count_dict.keys():
-        if c not in df:
-            df[c] = 0
-    df = df[cols + list(count_dict.keys())]
-    df = PRF(df)
-    df = df.fillna(0)
-    df = df.sort_values(cols)
+        for c in count_dict.keys():
+            if c not in df:
+                df[c] = 0
+        df = df[cols + list(count_dict.keys())]
+        df = PRF(df)
+        df = df.fillna(0)
+        df = df.sort_values(cols)
 
     print('final', df)
 
-    columns = [C.EVENT, C.ARGUMENT, C.SUBTYPE, C.NT, C.NP, C.TP, C.P, C.R, C.F1]
+
 
     return df
 
