@@ -97,6 +97,8 @@ class Corpus:
             file_list = file_list[:n]
 
         logging.info(f"BRAT file count: {len(file_list)}")
+        if len(file_list) == 0:
+            logging.error(f'''Could not find any brat files at "{path}"''')
 
         pbar = tqdm(total=len(file_list), desc='BRAT import')
 
