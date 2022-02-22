@@ -542,6 +542,7 @@ def get_event_df(nt, np, tp):
 
     df = pd.DataFrame(counts, columns= cols + [C.METRIC, C.COUNT])
 
+    print(nt, np, tp)
     print(df)
 
 
