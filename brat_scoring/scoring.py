@@ -542,6 +542,8 @@ def get_event_df(nt, np, tp):
 
     df = pd.DataFrame(counts, columns= cols + [C.METRIC, C.COUNT])
 
+    print(df)
+
 
     df = pd.pivot_table(df, values=C.COUNT, index=cols, columns=C.METRIC)
     df = df.fillna(0).astype(int)
