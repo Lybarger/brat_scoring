@@ -558,6 +558,8 @@ def get_event_df(nt, np, tp):
     df = df.fillna(0)
     df = df.sort_values(cols)
 
+    print(df)
+
     return df
 
 def summarize_event_df(df, name=None):
