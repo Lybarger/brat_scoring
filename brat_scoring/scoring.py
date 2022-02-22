@@ -658,8 +658,6 @@ def score_events(ids, gold, predict, labeled_args, \
 
         df = get_event_df(nt_doc, np_doc, tp_doc)
         df.insert(0, 'id', id)
-        if len(df) == 0:
-            print(df)
         dfs.append(df)
 
         nt_corpus += nt_doc
