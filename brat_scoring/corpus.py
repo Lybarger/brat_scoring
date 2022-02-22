@@ -77,8 +77,8 @@ class Corpus:
                         n = None,
                         ann_map = None):
 
-        # tokenizer = spacy.load(self.spacy_model)
-        tokenizer = None
+        tokenizer = spacy.load(self.spacy_model)
+
 
         '''
         Import BRAT directory
