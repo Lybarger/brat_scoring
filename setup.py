@@ -5,7 +5,7 @@ from setuptools import setup
 
 setup(
     name='brat_scoring',
-    version='0.1.0',
+    version='0.1.1',
     description='Python package for comparing BRAT annotations',
     url='https://github.com/Lybarger/brat_scoring.git',
     author='Kevin Lybarger',
@@ -14,7 +14,8 @@ setup(
     packages=['brat_scoring'],
     install_requires=['spacy',
                       'pandas',
-                      'tqdm'
+                      'tqdm',
+                      'wheel'
                       ],
 
     classifiers=[
