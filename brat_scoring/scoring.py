@@ -542,9 +542,6 @@ def get_event_df(nt, np, tp):
 
     df = pd.DataFrame(counts, columns= cols + [C.METRIC, C.COUNT])
 
-    print(nt, np, tp)
-    print('orig', df)
-
     if len(df) == 0:
         columns = [C.EVENT, C.ARGUMENT, C.SUBTYPE, C.NT, C.NP, C.TP, C.P, C.R, C.F1]
         df = pd.DataFrame(columns=columns)
@@ -563,12 +560,6 @@ def get_event_df(nt, np, tp):
         df = PRF(df)
         df = df.fillna(0)
         df = df.sort_values(cols)
-
-    print('final', df)
-
-
-
-
 
     return df
 
