@@ -543,10 +543,12 @@ def get_event_df(nt, np, tp):
     df = pd.DataFrame(counts, columns= cols + [C.METRIC, C.COUNT])
 
     print(nt, np, tp)
-    print(df)
+    print('orig', df)
 
 
     df = pd.pivot_table(df, values=C.COUNT, index=cols, columns=C.METRIC)
+    print('pt', df)
+
     df = df.fillna(0).astype(int)
     df = df.reset_index()
 
@@ -558,7 +560,9 @@ def get_event_df(nt, np, tp):
     df = df.fillna(0)
     df = df.sort_values(cols)
 
-    print(df)
+    print('final', df)
+
+    columns = [C.EVENT, C.ARGUMENT, C.SUBTYPE, C.NT, C.NP, C.TP, C.P, C.R, C.F1]
 
     return df
 
