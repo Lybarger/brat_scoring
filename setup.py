@@ -15,6 +15,7 @@ setup(
     install_requires=['wheel',
                       'pandas',
                       'tqdm',
+                      'numpy',
                       'spacy>=3.0.0',
                       ],
 
