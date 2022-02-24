@@ -21,19 +21,25 @@ The following packages are needed:
 - tqdm
 - pandas
 - wheel
- 
- The package install will fail, if `wheel` is not already installed. 
+
+ The package install will fail, if `wheel` is not already installed.
 
 ## Evaluation script
 The scoring routine can be pip installed or called from command line. The scoring routine implements the aforementioned evaluation by comparing two directories with BRAT-style annotations (*.txt and *.ann files). The scoring routine identifies all the *.ann files in both directories, finds matching filenames in the directories, and then compares the annotations defined in the *.ann files.
 
 ### Pythnon function import
- The `brat_scoring` package can be installed using `pip` as follows:
+The `brat_scoring` package can be installed using `pip` as follows:
 
 ```
 pip3 install git+https://github.com/Lybarger/brat_scoring.git
 ```
-NOTE: the wheel package is needed to pip install the package.
+
+The necessary spacy model can then be downloaded using:
+
+```
+python -m spacy download en_core_web_sm
+```
+
 
 The required arguments that define the input and output paths include:
 - gold_dir: *str*, path to the input directory with gold annotations in BRAT format, e.g. "/home/gold/"
@@ -56,7 +62,7 @@ from brat_scoring.constants import EXACT, LABEL, OVERLAP, PARTIAL, MIN_DIST
 
 df = score_brat_sdoh( \
                 gold_dir = "/home/gold/",
-                predict_dir = "/home/predict/", 
+                predict_dir = "/home/predict/",
                 output_path = "/home/scoring.csv",
                 score_trig = OVERLAP,
                 score_span = EXACT,
@@ -66,6 +72,15 @@ df = score_brat_sdoh( \
 
 
 ### Command line
+
+For command-line use, `brat_scoring` repository can cloned and required packages can be installed:
+```
+git clone https://github.com/Lybarger/brat_scoring.git
+pip install -r brat_scoring/requirements.txt
+python -m spacy download en_core_web_sm
+
+```
+
 The command line script, `run_sdoh_scoring.py`, is a simple wrapper for the function, `score_brat_sdoh`.
 
 The arguments for the command line script,`run_sdoh_scoring.py`, are similar to that of the function `score_brat_sdoh` above. The arguments can be view using:

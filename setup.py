@@ -12,10 +12,10 @@ setup(
     author_email='lybarger@uw.edu',
     license='MIT License',
     packages=['brat_scoring'],
-    install_requires=['spacy',
+    install_requires=['wheel',
                       'pandas',
                       'tqdm',
-                      'wheel'
+                      'spacy>=3.0.0',
                       ],
 
     classifiers=[
