@@ -1,0 +1,4 @@
+wheel
+pandas
+tqdm
+spacy>=3.0.0
