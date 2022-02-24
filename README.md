@@ -25,17 +25,28 @@ The following packages are needed:
 ## Evaluation script
 The scoring routine can be pip installed or called from command line. The scoring routine implements the aforementioned evaluation by comparing two directories with BRAT-style annotations (*.txt and *.ann files). The scoring routine identifies all the *.ann files in both directories, finds matching filenames in the directories, and then compares the annotations defined in the *.ann files.
 
-### Pythnon package import
-The `brat_scoring` package can be installed using `pip` as follows:
+
+
+
+### Python package installation
+The `brat_scoring` package and its dependencies can be installed using the following steps:
+
+1. Make sure the `pip` package manager is up-to-date:
+```
+pip install pip --upgrade
+```
+
+2. Install the `brat_scoring` package:
 ```
 pip3 install git+https://github.com/Lybarger/brat_scoring.git --upgrade
 ```
 
-The necessary spacy model can then be downloaded using:
+3. Download the `spacy` model `en_core_web_sm` using:
 ```
 python -m spacy download en_core_web_sm
 ```
 
+### Python scoring function usage
 Scoring is performed using the `score_brat_sdoh` function. The required arguments that define the input and output paths include:
 - gold_dir: *str*, path to the input directory with gold annotations in BRAT format, e.g. "/home/gold/"
 - predict_dir: *str*, path to the input directory with predicted annotations in BRAT format, e.g. "/home/predict/"
@@ -66,18 +77,35 @@ df = score_brat_sdoh( \
 ```
 
 
-### Command line
+### Command line installation
 
-For command-line use, `brat_scoring` repository can cloned and required packages can be installed:
+For command-line use, `brat_scoring` repository can cloned and its dependencies installed using the following steps:
+
+1. Make sure the `pip` package manager is up-to-date:
+```
+pip install pip --upgrade
+```
+
+2. Clone `brat_scoring` repo:
+
 ```
 git clone https://github.com/Lybarger/brat_scoring.git
+```
+
+3. Install dependencies:
+```
 pip install -r brat_scoring/requirements.txt
+```
+
+3. Download the `spacy` model `en_core_web_sm` using:
+```
 python -m spacy download en_core_web_sm
 ```
 
+### Command line usage
 The command line script, `run_sdoh_scoring.py`, is a simple wrapper for the function, `score_brat_sdoh`, and is located at `brat_scoring/brat_scoring/run_sdoh_scoring.py`.
 
-The arguments for the command line script,`run_sdoh_scoring.py`, are similar to that of the function `score_brat_sdoh` above. The arguments can be view using:
+The arguments for the command line script, `run_sdoh_scoring.py`, are similar to that of the function `score_brat_sdoh` above. The arguments can be view using:
 ```
 python3 run_sdoh_scoring.py -h
 ```
