@@ -31,7 +31,7 @@ def micro_average_subtypes(df):
     '''
 
     # aggregate counts across subtype
-    df = df.groupby([C.EVENT, C.ARGUMENT])[C.NT, C.NP, C.TP].sum()
+    df = df.groupby([C.EVENT, C.ARGUMENT])[[C.NT, C.NP, C.TP]].sum()
 
     # reset index
     df = df.reset_index()
