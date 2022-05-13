@@ -24,7 +24,6 @@ SCORE_LABELED = C.LABEL
 
 SPACY_MODEL = C.SPACY_MODEL
 
-
 def micro_average_subtypes(df):
     '''
     Calculate micro average across subtypes in event evaluation
@@ -34,8 +33,14 @@ def micro_average_subtypes(df):
     # aggregate counts across subtype
     df = df.groupby([C.EVENT, C.ARGUMENT]).sum([C.NT, C.NP, C.TP])
 
+    # reset index
+    df = df.reset_index()
+
     # update precision, recall, and F measure calc
     df = PRF(df)
+
+    # replace n/a with 0's
+    df = df.fillna(0)
 
     return df
 
@@ -55,9 +60,10 @@ def micro_average_subtypes_csv(input_path, output_path=None, suffix='_micro'):
 
     assert input_path != output_path
 
-    df.to_csv(output_path)
+    df.to_csv(output_path, index=False)
 
     return df
+
 
 
 def filter_df(df, event_types=None, argument_types=None):
