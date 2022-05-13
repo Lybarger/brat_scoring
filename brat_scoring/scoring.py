@@ -32,15 +32,19 @@ def micro_average_subtypes(df):
 
     # aggregate counts across subtype
     df = df.groupby([C.EVENT, C.ARGUMENT]).sum([C.NT, C.NP, C.TP])
+    print('df groubp', df)
 
     # reset index
     df = df.reset_index()
+    print('df resent', df)
 
     # update precision, recall, and F measure calc
     df = PRF(df)
+    print('df prf', df)
 
     # replace n/a with 0's
     df = df.fillna(0)
+    print('df fill', df)
 
     return df
 
