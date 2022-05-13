@@ -25,6 +25,41 @@ SCORE_LABELED = C.LABEL
 SPACY_MODEL = C.SPACY_MODEL
 
 
+def micro_average_subtypes(df):
+    '''
+    Calculate micro average across subtypes in event evaluation
+        Input is dataframe
+    '''
+
+    # aggregate counts across subtype
+    df = df.groupby([C.EVENT, C.ARGUMENT]).sum([C.NT, C.NP, C.TP])
+
+    # update precision, recall, and F measure calc
+    df = PRF(df)
+
+    return df
+
+
+def micro_average_subtypes_csv(input_path, output_path=None, suffix='_micro'):
+    '''
+    Calculate micro average across subtypes in event evaluation
+        Input is path to csv
+    '''
+
+    df = pd.read_csv(input_path)
+    df = micro_average_subtypes(df)
+
+    if output_path is None:
+        fn, ext = os.path.splitext(input_path)
+        output_path = f"{fn}{suffix}{ext}"
+
+    assert input_path != output_path
+
+    df.to_csv(output_path)
+
+    return df
+
+
 def filter_df(df, event_types=None, argument_types=None):
 
     if event_types is not None:
@@ -848,6 +883,8 @@ def score_brat_sdoh(gold_dir, predict_dir, output_path, \
                         include_detailed = include_detailed)
 
     return df
+
+
 
 
 #
