@@ -121,18 +121,11 @@ def get_indices_by_sent(start, end, offsets, tokens):
 
     return (sent_start, token_start, token_end, toks)
 
-def get_indices_by_doc(start, end, offsets, tokens):
-    """
-    Get sentence index for textbounds
-    """
 
-    # iterate over sentences
+def get_indices_overlap(start, end, offsets):
+
     token_start = None
     token_end = None
-
-    # flatten offsets
-    offsets = [idx for sent in offsets for idx in sent]
-    tokens =  [tok for sent in tokens  for tok in sent]
 
     for j, (char_start, char_end) in enumerate(offsets):
 
@@ -140,6 +133,62 @@ def get_indices_by_doc(start, end, offsets, tokens):
             token_start = j
         if (end   >  char_start) and (end   <= char_end):
             token_end = j + 1
+
+    return (token_start, token_end)
+
+
+def get_indices_close(start, end, offsets):
+
+    token_start = None
+    token_end = None
+
+    # max_difference is last token
+    _, last_index = offsets[-1]
+    diff_start = last_index
+    diff_end =   last_index
+
+    for j, (char_start, char_end) in enumerate(offsets):
+
+        diff_start_temp = abs(char_start - start)
+        diff_end_temp =   abs(char_end -   end)
+
+        if diff_start_temp < diff_start:
+            diff_start = diff_start_temp
+            token_start = j
+
+        if diff_end_temp < diff_end:
+            diff_end = diff_end_temp
+            token_end = j + 1
+
+    assert token_end >= token_start
+
+    token_end = max(token_end, token_start + 1)
+
+    return (token_start, token_end, diff_start, diff_end)
+
+
+
+def get_indices_by_doc(start, end, offsets, tokens):
+    """
+    Get sentence index for textbounds
+    """
+    # flatten offsets
+    offsets = [idx for sent in offsets for idx in sent]
+    tokens =  [tok for sent in tokens  for tok in sent]
+
+    # iterate over sentences
+    token_start, token_end = get_indices_overlap(start, end, offsets)
+
+    if (token_start is None) or (token_end is None):
+        token_start_close, token_end_close, diff_start, diff_end = get_indices_close(start, end, offsets)
+
+        if token_start is None:
+            token_start = token_start_close
+            logging.warning(f"Span start is whitespace. Finding closest token start. Char shift={diff_start}")
+
+        if token_end is None:
+            token_end = token_end_close
+            logging.warning(f"Span end is whitespace. Finding closest token end. Char shift={diff_end}")
 
     assert token_start is not None
     assert token_end is not None
@@ -189,6 +238,7 @@ def tb2entities(tb_dict, attr_dict, \
             token_indices_ = None
             tokens_ = None
         else:
+
             sent_index, token_start, token_end, tokens_ = get_indices( \
                                 start = tb.start,
                                 end = tb.end,

@@ -732,7 +732,8 @@ def score_docs(gold_docs, predict_docs, labeled_args, \
                             include_detailed = False,
                             spacy_model = SPACY_MODEL,
                             event_types = None,
-                            argument_types = None):
+                            argument_types = None,
+                            param_dict = None):
 
     """
     Score entities
@@ -796,6 +797,11 @@ def score_docs(gold_docs, predict_docs, labeled_args, \
     if score_span != C.PARTIAL:
         df_summary = insert_total_row(df_summary)
 
+    if param_dict is not None:
+        logging.info(f"Incorporating parameter dictionary into scoring output")
+        for idx, (param, value) in enumerate(param_dict.items()):
+            df_summary.insert(idx, param, value)
+
     if output_path is not None:
 
         f = get_path(output_path, description=description, ext='.csv', name='scores')
@@ -822,7 +828,8 @@ def score_brat(gold_dir, predict_dir, labeled_args, \
                             include_detailed = False,
                             spacy_model = SPACY_MODEL,
                             event_types = None,
-                            argument_types = None):
+                            argument_types = None,
+                            param_dict = None):
 
     logging.info("")
     logging.info(f"Gold importing...")
@@ -854,7 +861,8 @@ def score_brat(gold_dir, predict_dir, labeled_args, \
                             include_detailed = include_detailed,
                             spacy_model = spacy_model,
                             event_types = event_types,
-                            argument_types = argument_types)
+                            argument_types = argument_types,
+                            param_dict = param_dict)
 
     logging.info(f"Scoring complete")
 

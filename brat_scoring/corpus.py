@@ -16,7 +16,7 @@ import string
 from brat_scoring.constants import ENCODING, ARG_1, ARG_2, ROLE, TYPE, SUBTYPE, EVENT_TYPE, ENTITIES, COUNT, RELATIONS, ENTITIES, EVENTS, SPACY_MODEL, TRIGGER
 
 from brat_scoring.document import Document
-from brat_scoring.brat import get_brat_files
+from brat_scoring.brat import get_brat_files, get_brat_files_multi_dir
 from brat_scoring.proj_setup import make_and_clear
 
 
@@ -137,6 +137,122 @@ class Corpus:
 
         pbar.close()
 
+
+
+    def import_predictions(self, txt_path, ann_path, \
+                        n = None,
+                        ann_map = None,
+                        strict_import = True):
+
+        tokenizer = spacy.load(self.spacy_model)
+
+        logging.info(f"Importing predictions")
+
+        '''
+        Import BRAT directory
+        '''
+        # Find text and annotation files
+        text_files, ann_files = get_brat_files_multi_dir(txt_path, ann_path)
+
+        file_list = list(zip(text_files, ann_files))
+        file_list.sort(key=lambda x: x[0])
+
+        logging.info(f"\tImporting txt directory: {txt_path}")
+        logging.info(f"\tImporting ann directory: {ann_path}")
+
+        if n is not None:
+            logging.warn("="*72)
+            logging.warn("\tOnly process processing first {} files".format(n))
+            logging.warn("="*72)
+            file_list = file_list[:n]
+
+        # logging.info(f"BRAT file count: {len(file_list)}")
+        if len(file_list) == 0:
+            logging.error(f'''Could not find any brat files at "{txt_path}"''')
+
+        pbar = tqdm(total=len(file_list), desc='BRAT import')
+
+        # Loop on annotated files
+        missing = []
+        failure = []
+        success = []
+        for fn_txt, fn_ann in file_list:
+
+            # Read text file
+            with open(fn_txt, 'r', encoding=ENCODING) as f:
+                text = f.read()
+
+            # Read annotation file
+            if fn_ann is None:
+                msg = f"\tMissing annotation file associated with: {fn_txt}"
+                logging.warning(msg)
+                ann = ""
+
+            else:
+                with open(fn_ann, 'r', encoding=ENCODING) as f:
+                    ann = f.read()
+
+            if ann_map is not None:
+                for pat, val in ann_map:
+                    ann = re.sub(pat, val, ann)
+
+            # Use filename as ID
+            id = os.path.splitext(os.path.relpath(fn_txt, txt_path))[0]
+
+            doc = self.document_class( \
+                id = id,
+                text = text,
+                ann = ann,
+                tags = None,
+                tokenizer = tokenizer,
+                strict_import = strict_import
+                )
+
+            # Build corpus
+            assert doc.id not in self.docs_
+            self.docs_[doc.id] = doc
+
+            if fn_ann is None:
+                missing.append(doc.id)
+            elif not doc.import_successful:
+                failure.append(doc.id)
+            else:
+                success.append(doc.id)
+
+            pbar.update(1)
+
+        pbar.close()
+
+        n_missing = len(missing)
+        n_failure = len(failure)
+        n_success = len(success)
+
+        msg = f"\tCorpus import summary:"
+        logging.info(msg)
+
+        msg = f"\t\tMissing count: {n_missing}"
+        logging.warning(msg)
+
+        msg = f"\t\tFailure count: {n_failure}"
+        logging.warning(msg)
+
+        msg = f"\t\tSuccess count: {n_success}"
+        logging.info(msg)
+
+
+        summary = dict( \
+                            n_missing = n_missing,
+                            n_failure = n_failure,
+                            n_success = n_success,
+                            )
+
+        detailed = dict( \
+                            missing = missing,
+                            failure = failure,
+                            success = success,
+                            )
+
+        return (summary, detailed)
 
     def entities(self, include=None, exclude=None, as_dict=False, by_sent=False, entity_types=None):
         """

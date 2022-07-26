@@ -87,6 +87,7 @@ class Document:
         ann,
         tags = None,
         tokenizer = None,
+        strict_import = True
         ):
 
 
@@ -110,7 +111,23 @@ class Document:
         self.ann = ann
 
         # Extract events, text bounds, and attributes from annotation string
-        self.event_dict, self.relation_dict, self.tb_dict, self.attr_dict = get_annotations(ann)
+        self.import_successful = False
+        try:
+            self.event_dict, self.relation_dict, self.tb_dict, self.attr_dict = get_annotations(ann)
+            self.import_successful = True
+        except Exception as e:
+
+            logging.warning(f'''{id} - Could not import ann file using "get_annotations". {e}''')
+
+            if strict_import:
+                msg = f'''{id} - strict_import = {strict_import}. Exiting without creating document.'''
+                logging.error(msg)
+                assert False
+
+            else:
+                self.event_dict, self.relation_dict, self.tb_dict, self.attr_dict = get_annotations('')
+                msg = f'''{id} - strict_import = {strict_import}. Assuming blank ann (i.e. no annotations).'''
+                logging.warning(msg)
 
 
     def __str__(self):

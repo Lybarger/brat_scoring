@@ -167,7 +167,11 @@ def get_annotations(ann):
                 ATTRIBUTE_RE.search(l)
             )
         ]
-    msg = f'''Could not match all annotation lines: {remaining}. This maybe due to a textbound with line break character in the text span.'''
+    msg = f'''Could not match all annotation lines. This maybe due to a textbound with line break character in the text span.'''
+    for i, r in enumerate(remaining):
+        msg += f"\n{i} - {repr(r)}"
+    msg += '\n'
+
     assert len(remaining)==0, msg
 
     # Get events
@@ -461,6 +465,61 @@ def get_brat_files(path):
                         format("\n".join(mismatches))
 
     return (text_files, ann_files)
+
+
+def get_filename_dict(file_list):
+
+    d = OrderedDict()
+    for f in file_list:
+        # k = f.relative_to(root).with_suffix('')
+
+        # to get file les stem without extension
+        k = f.stem
+        k = str(k)
+
+        assert k not in d
+        d[k] = str(f)
+
+    return d
+
+def get_brat_files_multi_dir(txt_path, ann_path):
+    '''
+    Find text and annotation files
+    '''
+    # Text and annotation files
+    txt_file_list = get_files(txt_path, TEXT_FILE_EXT, relative=False)
+    ann_file_list = get_files(ann_path, ANN_FILE_EXT, relative=False)
+
+    # sort text file list
+    txt_file_list.sort()
+
+    txt_file_dict = get_filename_dict(txt_file_list)
+    ann_file_dict = get_filename_dict(ann_file_list)
+
+    # Find text-ann pairs
+    txt_files = []
+    ann_files = []
+    missing_files = []
+    for k in txt_file_dict:
+
+        txt_files.append(txt_file_dict[k])
+        if k in ann_file_dict:
+            ann_files.append(ann_file_dict[k])
+        else:
+            ann_files.append(None)
+            missing_files.append(txt_file_dict[k])
+
+    # Check number of text and annotation files
+    if len(missing_files) > 0:
+        msg = f'get_brat_files_multi_dir -- Missing file count: {len(missing_files)}'
+        logging.warning(msg)
+
+    assert len(txt_files) == len(ann_files)
+
+    for t, a in zip(txt_files, ann_files):
+        assert (a is None) or (Path(t).stem == Path(a).stem)
+
+    return (txt_files, ann_files)
 
 
 def textbound_str(id, type_, start, end, text):

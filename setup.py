@@ -5,7 +5,7 @@ from setuptools import setup
 
 setup(
     name='brat_scoring',
-    version='0.1.7',
+    version='0.1.8',
     description='Python package for comparing BRAT annotations',
     url='https://github.com/Lybarger/brat_scoring.git',
     author='Kevin Lybarger',
