@@ -117,6 +117,9 @@ class Document:
             self.import_successful = True
         except Exception as e:
 
+
+            assert False, 'stuck'
+
             logging.warning(f'''{id} - Could not import ann file using "get_annotations". {e}''')
 
             if strict_import:

@@ -7,6 +7,8 @@ import re
 import difflib
 import spacy
 
+from tqdm import tqdm
+
 import brat_scoring.constants as C
 
 from brat_scoring.corpus import Corpus
@@ -147,11 +149,40 @@ def longest_match_len(A, B, verbose=False):
 
     return match.size
 
+
+def calc_P(tp, np):
+
+    if np == 0:
+        return 0.0
+    else:
+        return float(tp)/float(np)
+
+def calc_R(tp, nt):
+
+    if nt == 0:
+        return 0.0
+    else:
+        return float(tp)/float(nt)
+
+def calc_F1(p, r):
+
+    if p*r == 0:
+        return 0.0
+    else:
+        return 2*p*r/(p + r)
+
+
 def PRF(df):
 
-    df["P"] = df[C.TP]/(df[C.NP].astype(float))
-    df["R"] = df[C.TP]/(df[C.NT].astype(float))
-    df["F1"] = 2*df["P"]*df["R"]/(df["P"] + df["R"])
+    df["P"] =  df.apply(lambda row: calc_P( tp=row[C.TP], np=row[C.NP]), axis=1)
+    df["R"] =  df.apply(lambda row: calc_R( tp=row[C.TP], nt=row[C.NT]), axis=1)
+    df["F1"] = df.apply(lambda row: calc_F1(p=row["P"],   r= row["R"]),  axis=1)
+
+    # print(df)
+    # df["P"] = df[C.TP]/(df[C.NP].astype(float))
+    # df["R"] = df[C.TP]/(df[C.NT].astype(float))
+    # df["F1"] = 2*df["P"]*df["R"]/(df["P"] + df["R"])
+    # print(df)
 
     return df
 
@@ -179,7 +210,9 @@ def get_event_counts(events, labeled_args, \
         # Get trigger
         trigger = event.arguments[0]
 
+        # KJL mod 12/2/2022
         event_type = trigger.type_
+        # event_type = event.type_
 
         # iterate over arguments
         for i, argument in enumerate(event.arguments):
@@ -548,8 +581,12 @@ def get_event_matches(gold, predict, labeled_args, \
         predict_trigger =   p.arguments[0]
         predict_arguments = p.arguments[1:]
 
-
+        # KJL mod 12/2/2022
         k = get_event_key(gold_trigger.type_, C.TRIGGER, gold_trigger.subtype)
+        #event_type = g.type_
+        #k = get_event_key(event_type, C.TRIGGER, gold_trigger.subtype)
+
+
         counter[k] += 1
 
         counter += get_entity_matches( \
@@ -558,7 +595,11 @@ def get_event_matches(gold, predict, labeled_args, \
                             labeled_args = labeled_args,
                             score_span = score_span,
                             score_labeled = score_labeled,
+
+                            # KJL mod 12/2/2022
                             event_type = gold_trigger.type_,
+                            #event_type = event_type,
+
                             tokenizer = tokenizer
                             )
 
@@ -733,7 +774,9 @@ def score_docs(gold_docs, predict_docs, labeled_args, \
                             spacy_model = SPACY_MODEL,
                             event_types = None,
                             argument_types = None,
-                            param_dict = None):
+                            param_dict = None,
+                            verbose = True):
+
 
     """
     Score entities
@@ -798,7 +841,8 @@ def score_docs(gold_docs, predict_docs, labeled_args, \
         df_summary = insert_total_row(df_summary)
 
     if param_dict is not None:
-        logging.info(f"Incorporating parameter dictionary into scoring output")
+        if verbose:
+            logging.info(f"Incorporating parameter dictionary into scoring output")
         for idx, (param, value) in enumerate(param_dict.items()):
             df_summary.insert(idx, param, value)
 
@@ -806,12 +850,14 @@ def score_docs(gold_docs, predict_docs, labeled_args, \
 
         f = get_path(output_path, description=description, ext='.csv', name='scores')
         df_summary.to_csv(f, index=False)
-        logging.info(f'Corpus-level scoring saved to: {f}')
+        if verbose:
+            logging.info(f'Corpus-level scoring saved to: {f}')
 
         if include_detailed:
             f = re.sub('\.csv', '_detailed.csv', f)
             df_detailed.to_csv(f, index=False)
-            logging.info(f'Document-level scoring saved to: {f}')
+            if verbose:
+                logging.info(f'Document-level scoring saved to: {f}')
 
     return df_summary
 
